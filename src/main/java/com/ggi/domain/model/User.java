@@ -1,10 +1,10 @@
 package com.ggi.domain.model;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.*;
 import java.util.Date;
 
 @EqualsAndHashCode(callSuper = true)
