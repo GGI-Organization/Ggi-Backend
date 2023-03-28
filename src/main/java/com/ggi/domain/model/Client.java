@@ -12,10 +12,13 @@ import lombok.EqualsAndHashCode;
 @Table(name = "clients")
 @Data
 public class Client extends User {
+
     @NotNull
     private String customerName;
+
     @NotNull
     private String email;
+
     @NotNull
     private String creditCardInfo;
 }

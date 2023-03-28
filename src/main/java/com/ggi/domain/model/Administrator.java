@@ -11,8 +11,10 @@ import lombok.EqualsAndHashCode;
 @Table(name = "administrators")
 @Data
 public class Administrator extends User {
+
     @NotNull
     private String adminName;
+
     @NotNull
     private String email;
 }
