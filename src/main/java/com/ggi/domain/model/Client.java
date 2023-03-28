@@ -19,6 +19,4 @@ public class Client extends User {
     @NotNull
     private String email;
 
-    @NotNull
-    private String creditCardInfo;
 }
