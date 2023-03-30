@@ -9,5 +9,4 @@ import java.util.Optional;
 
 @Repository
 public interface DiagramRepository extends JpaRepository<Diagram, Long> {
-    public Optional<Diagram> findById(Long id);
 }

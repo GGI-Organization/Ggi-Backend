@@ -7,24 +7,15 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
+@Table(name = "connections")
 @Data
-@Table(name = "components")
-public class Component extends AuditModel {
+public class AzureConnect extends AuditModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    private String tag;
-
-    @NotNull
-    @Lob
-    private String description;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "diagram_id", nullable = false)
-    private Diagram diagram;
-
+    private boolean status;
 
 }

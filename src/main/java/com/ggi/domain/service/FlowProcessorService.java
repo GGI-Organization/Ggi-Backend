@@ -7,15 +7,10 @@ import org.springframework.http.ResponseEntity;
 
 public interface FlowProcessorService {
 
-    Page<FlowProcessor> getAllProcessors(Pageable pageable);
-
-    FlowProcessor getProcessorById(Long id);
-
-    FlowProcessor createProcessor(FlowProcessor processor);
-
-    FlowProcessor updateProcessor(Long id, FlowProcessor processorRequest);
-
-    ResponseEntity<?> deleteProcessor(Long id);
-
+    Page<FlowProcessor> getAll(Pageable pageable);
+    FlowProcessor getById(Long id);
+    FlowProcessor create(FlowProcessor processor);
+    FlowProcessor update(Long id, FlowProcessor processorRequest);
+    ResponseEntity<?> delete(Long id);
     ResponseEntity<?> loadDiagram();
 }
