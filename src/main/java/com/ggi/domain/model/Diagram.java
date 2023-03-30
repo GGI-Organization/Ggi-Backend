@@ -3,6 +3,8 @@ package com.ggi.domain.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 @Entity
 @Table(name = "diagrams")
 public class Diagram extends AuditModel {
@@ -13,6 +15,10 @@ public class Diagram extends AuditModel {
 
     @NotNull
     private String status;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diagram",
+            cascade = CascadeType.ALL)
+    private List<Component> components;
 
     public Long getId() {
         return id;
@@ -29,6 +35,15 @@ public class Diagram extends AuditModel {
 
     public Diagram setStatus(String status) {
         this.status = status;
+        return this;
+    }
+
+    public List<Component> getComponents() {
+        return components;
+    }
+
+    public Diagram setComponents(List<Component> components) {
+        this.components = components;
         return this;
     }
 }

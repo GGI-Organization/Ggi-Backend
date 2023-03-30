@@ -18,8 +18,8 @@ public class Component extends AuditModel {
     @Lob
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "diagram_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "diagram_id", nullable = true)
     private Diagram diagram;
 
     public Long getId() {
