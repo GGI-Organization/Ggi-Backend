@@ -12,4 +12,7 @@ public interface DiagramService {
     Diagram update(Long id, Diagram diagramRequest);
     ResponseEntity<?> delete(Long id);
     Page<Diagram> getAllByStatus(boolean status);
+
+    Diagram assignComponentById(Long diagramId, Long componentId);
+    Diagram UnAssignComponentById(Long diagramId, Long componentId);
 }

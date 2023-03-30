@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface ComponentService {
     Page<Component> getAll(Pageable pageable);
+    Page<Component> getAllComponentsByDiagramId(Long diagramId, Pageable pageable);
     Component getById(Long id);
     Component create(Component component);
     Component update(Long id, Component componentRequest);
