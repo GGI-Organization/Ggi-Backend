@@ -3,13 +3,9 @@ package com.ggi.domain.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "processors")
-@Data
 public class FlowProcessor extends AuditModel {
 
     @Id
@@ -18,4 +14,22 @@ public class FlowProcessor extends AuditModel {
 
     @NotNull
     private String status;
+
+    public Long getId() {
+        return id;
+    }
+
+    public FlowProcessor setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public FlowProcessor setStatus(String status) {
+        this.status = status;
+        return this;
+    }
 }

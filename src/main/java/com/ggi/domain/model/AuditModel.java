@@ -2,7 +2,6 @@ package com.ggi.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,7 +12,6 @@ import java.util.Date;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdAt", "updatedAt"}, allowGetters = true)
-@Data
 public abstract class AuditModel implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -26,4 +24,21 @@ public abstract class AuditModel implements Serializable {
     @LastModifiedDate
     private Date updatedAt;
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public AuditModel setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public AuditModel setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
+    }
 }

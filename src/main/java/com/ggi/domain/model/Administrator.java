@@ -3,18 +3,32 @@ package com.ggi.domain.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "administrators")
-@Data
 public class Administrator extends User {
 
     @NotNull
-    private String adminName;
+    private String authorityLevel;
 
     @NotNull
-    private String email;
+    private String[] shareRegister;
+
+    public String getAuthorityLevel() {
+        return authorityLevel;
+    }
+
+    public Administrator setAuthorityLevel(String authorityLevel) {
+        this.authorityLevel = authorityLevel;
+        return this;
+    }
+
+    public String[] getShareRegister() {
+        return shareRegister;
+    }
+
+    public Administrator setShareRegister(String[] shareRegister) {
+        this.shareRegister = shareRegister;
+        return this;
+    }
 }

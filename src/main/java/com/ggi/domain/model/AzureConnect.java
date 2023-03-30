@@ -2,13 +2,9 @@ package com.ggi.domain.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "connections")
-@Data
 public class AzureConnect extends AuditModel {
 
     @Id
@@ -16,6 +12,23 @@ public class AzureConnect extends AuditModel {
     private Long id;
 
     @NotNull
-    private boolean status;
+    private String status;
 
+    public Long getId() {
+        return id;
+    }
+
+    public AzureConnect setId(Long id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public AzureConnect setStatus(String status) {
+        this.status = status;
+        return this;
+    }
 }

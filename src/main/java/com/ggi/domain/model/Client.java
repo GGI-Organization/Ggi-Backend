@@ -3,20 +3,21 @@ package com.ggi.domain.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 
-@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "clients")
-@Data
 public class Client extends User {
 
     @NotNull
-    private String customerName;
+    private String accountSettings;
 
-    @NotNull
-    private String email;
+    public String getAccountSettings() {
+        return accountSettings;
+    }
 
+    public Client setAccountSettings(String accountSettings) {
+        this.accountSettings = accountSettings;
+        return this;
+    }
 }
