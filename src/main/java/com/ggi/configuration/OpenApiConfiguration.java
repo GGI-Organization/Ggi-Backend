@@ -14,6 +14,6 @@ public class OpenApiConfiguration {
                 .components(new Components())
                 .info(new Info()
                         .title("GGI Application API")
-                        .description("Blogging API implemented with Spring Boot RESTful service and documented using springdoc-openapi and OpenAPI 3.1"));
+                        .description("GGI API implemented with Spring Boot RESTful service and documented using springdoc-openapi and OpenAPI 3.1"));
     }
 }
