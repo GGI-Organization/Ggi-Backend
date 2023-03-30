@@ -1,38 +1,37 @@
 package com.ggi.service;
 
-import com.ggi.domain.model.Administrator;
-import com.ggi.domain.repository.AdministratorRepository;
-import com.ggi.domain.service.AdministratorService;
+import com.ggi.domain.model.AzureConnect;
+import com.ggi.domain.repository.AzureConnectRepository;
+import com.ggi.domain.service.AzureConnectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-
 @Service
-public class AdministratorServiceImpl implements AdministratorService {
+public class AzureConnectImpl implements AzureConnectService {
 
     @Autowired
-    private AdministratorRepository administratorRepository;
+    private AzureConnectRepository azureConnectRepository;
 
     @Override
-    public Page<Administrator> getAll(Pageable pageable) {
+    public Page<AzureConnect> getAll(Pageable pageable) {
         return null;
     }
 
     @Override
-    public Administrator getById(Long id) {
+    public AzureConnect getById(Long id) {
         return null;
     }
 
     @Override
-    public Administrator create(Administrator administrator) {
+    public AzureConnect create(AzureConnect azureConnect) {
         return null;
     }
 
     @Override
-    public Administrator update(Long id, Administrator administrator) {
+    public AzureConnect update(Long id, AzureConnect azureConnect) {
         return null;
     }
 

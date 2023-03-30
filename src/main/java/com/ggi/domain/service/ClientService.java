@@ -1,9 +1,15 @@
 package com.ggi.domain.service;
 
 import com.ggi.domain.model.Client;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 
-import java.util.Optional;
 
 public interface ClientService {
-    Optional<Client> findById(Long clientId);
+    Page<Client> getAll(Pageable pageable);
+    Client getById(Long id);
+    Client create(Client client);
+    Client update(Long id, Client client);
+    ResponseEntity<?> delete(Long id);
 }
