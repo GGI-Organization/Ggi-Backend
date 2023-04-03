@@ -10,6 +10,6 @@ public interface ClientService {
     Page<Client> getAll(Pageable pageable);
     Client getById(Long id);
     Client create(Client client);
-    Client update(Long id, Client client);
+    Client update(Long id, Client clientRequest);
     ResponseEntity<?> delete(Long id);
 }

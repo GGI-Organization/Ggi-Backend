@@ -14,6 +14,11 @@ public class Administrator extends User {
     @NotNull
     private String[] shareRegister;
 
+    public Administrator(@NotNull String authorityLevel, @NotNull String[] shareRegister) {
+        this.authorityLevel = authorityLevel;
+        this.shareRegister = shareRegister;
+    }
+
     public String getAuthorityLevel() {
         return authorityLevel;
     }

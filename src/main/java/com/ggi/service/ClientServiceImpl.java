@@ -1,8 +1,10 @@
 package com.ggi.service;
 
+import com.ggi.domain.model.Administrator;
 import com.ggi.domain.model.Client;
 import com.ggi.domain.repository.ClientRepository;
 import com.ggi.domain.service.ClientService;
+import com.ggi.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,26 +21,43 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Page<Client> getAll(Pageable pageable) {
-        return null;
+        return clientRepository.findAll(pageable);
     }
 
     @Override
     public Client getById(Long id) {
-        return null;
+        return clientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Client not found wit Id" + id));
     }
 
     @Override
     public Client create(Client client) {
-        return null;
+        return clientRepository.save(client);
     }
 
     @Override
-    public Client update(Long id, Client client) {
-        return null;
+    public Client update(Long id, Client clientRequest) {
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Administrator", "Id", id));
+
+        client.setAccountSettings(clientRequest.getAccountSettings())
+                .setId(clientRequest.getId())
+                .setPassword(clientRequest.getPassword())
+                .setLoginStatus(clientRequest.getLoginStatus())
+                .setUserName(clientRequest.getUserName())
+                .setEmail(clientRequest.getEmail())
+                .setRegisterDate(clientRequest.getRegisterDate());
+
+        return clientRepository.save(client);
     }
 
     @Override
     public ResponseEntity<?> delete(Long id) {
-        return null;
+        Client client = clientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Client", "Id", id));
+
+        clientRepository.delete(client);
+        return ResponseEntity.ok().build();
     }
 }

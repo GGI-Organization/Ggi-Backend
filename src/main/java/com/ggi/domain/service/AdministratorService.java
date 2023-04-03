@@ -10,6 +10,6 @@ public interface AdministratorService {
     Page<Administrator> getAll(Pageable pageable);
     Administrator getById(Long id);
     Administrator create(Administrator administrator);
-    Administrator update(Long id, Administrator administrator);
+    Administrator update(Long id, Administrator administratorRequest);
     ResponseEntity<?> delete(Long id);
 }

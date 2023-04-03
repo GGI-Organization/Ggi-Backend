@@ -29,7 +29,7 @@ public class Diagram extends AuditModel {
         return this;
     }
 
-    public String status() {
+    public String getStatus() {
         return status;
     }
 
@@ -44,6 +44,23 @@ public class Diagram extends AuditModel {
 
     public Diagram setComponents(List<Component> components) {
         this.components = components;
+        return this;
+    }
+
+    private boolean hasTheComponentOf(Component component) {
+        return this.getComponents().contains(component);
+    }
+
+    public Diagram addComponent(Component component) {
+        if(!this.hasTheComponentOf(component)) {
+            this.getComponents().add(component);
+        }
+        return this;
+    }
+
+    public Diagram removeComponent(Component component) {
+        if(this.hasTheComponentOf(component))
+            this.getComponents().remove(component);
         return this;
     }
 }

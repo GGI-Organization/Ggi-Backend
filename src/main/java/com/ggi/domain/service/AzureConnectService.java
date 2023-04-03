@@ -9,6 +9,6 @@ public interface AzureConnectService {
     Page<AzureConnect> getAll(Pageable pageable);
     AzureConnect getById(Long id);
     AzureConnect create(AzureConnect azureConnect);
-    AzureConnect update(Long id, AzureConnect azureConnect);
+    AzureConnect update(Long id, AzureConnect azureConnectRequest);
     ResponseEntity<?> delete(Long id);
 }

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 
+@MappedSuperclass
 public abstract class User extends AuditModel {
 
     @Id
