@@ -1,6 +1,5 @@
 package com.ggi.service;
 
-import com.ggi.domain.model.Administrator;
 import com.ggi.domain.model.FlowProcessor;
 import com.ggi.domain.repository.FlowProcessorRepository;
 import com.ggi.domain.service.FlowProcessorService;

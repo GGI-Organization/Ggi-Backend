@@ -41,7 +41,6 @@ public class AdministratorServiceImpl implements AdministratorService {
 
         administrator.setAuthorityLevel(administratorRequest.getAuthorityLevel())
                 .setShareRegister(administratorRequest.getShareRegister())
-                .setId(administratorRequest.getId())
                 .setPassword(administratorRequest.getPassword())
                 .setLoginStatus(administratorRequest.getLoginStatus())
                 .setUserName(administratorRequest.getUserName())
