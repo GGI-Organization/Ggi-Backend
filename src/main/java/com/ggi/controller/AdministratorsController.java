@@ -59,7 +59,7 @@ public class AdministratorsController {
             @ApiResponse(responseCode = "200", description = "Administrator returned", content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404", description = "Administrator not found")
     })
-    @GetMapping("/administrators/{administratorId}")
+    @GetMapping("/administrators/{id}")
     public AdministratorResource getAdministratorById(@PathVariable Long id){
         return convertToResource(administratorService.getById(id));
     }
@@ -78,7 +78,7 @@ public class AdministratorsController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Administrator Updated", content = @Content(mediaType = "application/json")),
     })
-    @PutMapping("/administrators/{administratorId}")
+    @PutMapping("/administrators/{id}")
     public AdministratorResource updateAdministrator(@PathVariable Long id, @Valid @RequestBody SaveAdministratorResource resource) {
         Administrator administrator = convertToEntity(resource);
         return convertToResource(administratorService.update(id, administrator));
@@ -88,8 +88,8 @@ public class AdministratorsController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Administrator deleted", content = @Content(mediaType = "application/json")),
     })
-    @DeleteMapping("/administrators/{administratorId}")
+    @DeleteMapping("/administrators/{id}")
     public ResponseEntity<?> deleteAdministrator(@PathVariable Long id) {
         return administratorService.delete(id);
     }
-}   
+}

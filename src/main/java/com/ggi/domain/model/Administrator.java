@@ -19,6 +19,9 @@ public class Administrator extends User {
         this.shareRegister = shareRegister;
     }
 
+    public Administrator() {
+    }
+
     public String getAuthorityLevel() {
         return authorityLevel;
     }
