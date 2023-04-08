@@ -1,14 +1,16 @@
 package com.ggi.domain.service;
 
-import com.ggi.domain.model.AzureConnect;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
+import com.ggi.resource.response.PredictionRes;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface AzureConnectService {
-    Page<AzureConnect> getAll(Pageable pageable);
-    AzureConnect getById(Long id);
-    AzureConnect create(AzureConnect azureConnect);
-    AzureConnect update(Long id, AzureConnect azureConnectRequest);
-    ResponseEntity<?> delete(Long id);
+    CompletableFuture<PredictionRes> getPredictionFromBPMN(MultipartFile image);
+    PredictionRes getPredictionFromMockup(MultipartFile imageMockup);
+    ArrayList<String> getRootsAboutPrediction(PredictionRes predictionRes, MultipartFile image);
+    CompletableFuture<List<String>> getOCRFromImage(List<byte[]> bytesFromBPMN);
+    ArrayList<String> getOCRFromImageV2(ArrayList<String> rootImagesClipped);
 }
