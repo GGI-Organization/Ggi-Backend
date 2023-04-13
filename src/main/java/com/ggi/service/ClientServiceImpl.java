@@ -1,6 +1,5 @@
 package com.ggi.service;
 
-import com.ggi.domain.model.Administrator;
 import com.ggi.domain.model.Client;
 import com.ggi.domain.repository.ClientRepository;
 import com.ggi.domain.service.ClientService;

@@ -13,4 +13,7 @@ public interface FormService {
     Form create(Long formManagerId, Form form);
     Form update(Long id, Long formManagerId, Form formDetails);
     ResponseEntity<?> delete(Long id, Long formManagerId);
+
+    Form assignItemById(Long id, Long itemId);
+    Form UnAssignItemById(Long id, Long itemId);
 }

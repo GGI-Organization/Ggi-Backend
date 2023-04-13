@@ -1,9 +1,10 @@
 package com.ggi.service;
 
 import com.ggi.domain.model.Form;
-import com.ggi.domain.model.FormManager;
+import com.ggi.domain.model.Item;
 import com.ggi.domain.repository.FormManagerRepository;
 import com.ggi.domain.repository.FormRepository;
+import com.ggi.domain.repository.ItemRepository;
 import com.ggi.domain.service.FormService;
 import com.ggi.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class FormServiceImpl implements FormService {
 
     @Autowired
     private FormManagerRepository formManagerRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
 
     @Override
     public Page<Form> getAll(Pageable pageable) {
@@ -77,5 +81,23 @@ public class FormServiceImpl implements FormService {
             return ResponseEntity.ok().build();
         }).orElseThrow(() -> new ResourceNotFoundException(
                 "Form", "Id", id));
+    }
+
+    @Override
+    public Form assignItemById(Long id, Long itemId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Item", "Id", itemId));
+        return formRepository.findById(id).map(form ->
+                        formRepository.save(form.addItem(item)))
+                .orElseThrow(() -> new ResourceNotFoundException("Form", "Id", id));
+    }
+
+    @Override
+    public Form UnAssignItemById(Long id, Long itemId) {
+        Item item = itemRepository.findById(itemId)
+                .orElseThrow(() -> new ResourceNotFoundException("Item", "Id", itemId));
+        return formRepository.findById(id).map(form ->
+                        formRepository.save(form.removeItem(item)))
+                .orElseThrow(() -> new ResourceNotFoundException("Form", "Id", id));
     }
 }
