@@ -17,7 +17,7 @@ public class Text extends AuditModel {
     public Text() {
     }
 
-    public Text(String description) {
+    public Text(@NotNull String description) {
         this.description = description;
     }
 

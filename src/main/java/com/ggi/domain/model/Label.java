@@ -16,7 +16,7 @@ public class Label extends AuditModel {
     public Label() {
     }
 
-    public Label(String description) {
+    public Label(@NotNull String description) {
         this.description = description;
     }
 

@@ -27,9 +27,8 @@ public class Form extends AuditModel {
     public Form() {
     }
 
-    public Form(String type, FormManager formManager) {
+    public Form(@NotNull String type) {
         this.type = type;
-        this.formManager = formManager;
     }
 
     public Long getId() {

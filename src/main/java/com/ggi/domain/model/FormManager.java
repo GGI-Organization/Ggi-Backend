@@ -23,7 +23,7 @@ public class FormManager extends AuditModel {
     public FormManager() {
     }
 
-    public FormManager(String status) {
+    public FormManager(@NotNull String status) {
         this.status = status;
     }
 
