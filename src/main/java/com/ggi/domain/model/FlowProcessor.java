@@ -15,6 +15,13 @@ public class FlowProcessor extends AuditModel {
     @NotNull
     private String status;
 
+    public FlowProcessor() {
+    }
+
+    public FlowProcessor(@NotNull String status) {
+        this.status = status;
+    }
+
     public Long getId() {
         return id;
     }

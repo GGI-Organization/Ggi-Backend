@@ -14,6 +14,13 @@ public class AzureConnect extends AuditModel {
     @NotNull
     private String status;
 
+    public AzureConnect() {
+    }
+
+    public AzureConnect(@NotNull String status) {
+        this.status = status;
+    }
+
     public Long getId() {
         return id;
     }

@@ -22,6 +22,14 @@ public class Component extends AuditModel {
     @JoinColumn(name = "diagram_id", nullable = true)
     private Diagram diagram;
 
+    public Component() {
+    }
+
+    public Component(@NotNull String tag, @NotNull String description) {
+        this.tag = tag;
+        this.description = description;
+    }
+
     public Long getId() {
         return id;
     }

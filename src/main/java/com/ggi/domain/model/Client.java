@@ -12,6 +12,13 @@ public class Client extends User {
     @NotNull
     private String accountSettings;
 
+    public Client() {
+    }
+
+    public Client(@NotNull String accountSettings) {
+        this.accountSettings = accountSettings;
+    }
+
     public String getAccountSettings() {
         return accountSettings;
     }

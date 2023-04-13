@@ -20,6 +20,13 @@ public class Diagram extends AuditModel {
             cascade = CascadeType.ALL)
     private List<Component> components;
 
+    public Diagram() {
+    }
+
+    public Diagram(@NotNull String status) {
+        this.status = status;
+    }
+
     public Long getId() {
         return id;
     }
