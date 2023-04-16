@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "administrators")
-public class Administrator extends User {
+public class Administrator extends Profile {
 
     @NotNull
     private String authorityLevel;

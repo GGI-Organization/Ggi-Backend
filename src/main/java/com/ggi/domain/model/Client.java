@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "clients")
-public class Client extends User {
+public class Client extends Profile {
 
     @NotNull
     private String accountSettings;

@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 
 @MappedSuperclass
-public abstract class User extends AuditModel {
+public abstract class Profile extends AuditModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +31,7 @@ public abstract class User extends AuditModel {
         return id;
     }
 
-    public User setId(Long id) {
+    public Profile setId(Long id) {
         this.id = id;
         return this;
     }
@@ -40,7 +40,7 @@ public abstract class User extends AuditModel {
         return password;
     }
 
-    public User setPassword(String password) {
+    public Profile setPassword(String password) {
         this.password = password;
         return this;
     }
@@ -49,7 +49,7 @@ public abstract class User extends AuditModel {
         return loginStatus;
     }
 
-    public User setLoginStatus(String loginStatus) {
+    public Profile setLoginStatus(String loginStatus) {
         this.loginStatus = loginStatus;
         return this;
     }
@@ -58,7 +58,7 @@ public abstract class User extends AuditModel {
         return userName;
     }
 
-    public User setUserName(String userName) {
+    public Profile setUserName(String userName) {
         this.userName = userName;
         return this;
     }
@@ -67,7 +67,7 @@ public abstract class User extends AuditModel {
         return email;
     }
 
-    public User setEmail(String email) {
+    public Profile setEmail(String email) {
         this.email = email;
         return this;
     }
@@ -76,7 +76,7 @@ public abstract class User extends AuditModel {
         return registerDate;
     }
 
-    public User setRegisterDate(Date registerDate) {
+    public Profile setRegisterDate(Date registerDate) {
         this.registerDate = registerDate;
         return this;
     }

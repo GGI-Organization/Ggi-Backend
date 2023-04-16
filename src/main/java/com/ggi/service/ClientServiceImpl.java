@@ -8,15 +8,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Service
 public class ClientServiceImpl implements ClientService {
+    private static final String DEFAULT_USERNAME = "john.doe@gmail.com";
+    private static final List<GrantedAuthority> DEFAULT_AUTHORITIES = new ArrayList<>();
 
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Page<Client> getAll(Pageable pageable) {
@@ -58,5 +70,15 @@ public class ClientServiceImpl implements ClientService {
 
         clientRepository.delete(client);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // TODO: Implement Repository-based User Store
+        String defaultPassword = passwordEncoder.encode("password");
+        if (DEFAULT_USERNAME.equals(username)) {
+            return new User(DEFAULT_USERNAME, defaultPassword, DEFAULT_AUTHORITIES);
+        }
+        throw new UsernameNotFoundException("User not found with username " + username);
     }
 }
