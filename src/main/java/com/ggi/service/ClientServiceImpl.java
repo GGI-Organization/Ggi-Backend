@@ -31,44 +31,44 @@ public class ClientServiceImpl implements ClientService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public Page<Client> getAll(Pageable pageable) {
+    public Page<User> getAll(Pageable pageable) {
         return clientRepository.findAll(pageable);
     }
 
     @Override
-    public Client getById(Long id) {
+    public User getById(Long id) {
         return clientRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Client not found wit Id" + id));
+                        "User not found wit Id" + id));
     }
 
     @Override
-    public Client create(Client client) {
-        return clientRepository.save(client);
+    public User create(User user) {
+        return clientRepository.save(user);
     }
 
     @Override
-    public Client update(Long id, Client clientRequest) {
-        Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Administrator", "Id", id));
+    public User update(Long id, User userRequest) {
+        User user = clientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
 
-        client.setAccountSettings(clientRequest.getAccountSettings())
-                .setId(clientRequest.getId())
-                .setPassword(clientRequest.getPassword())
-                .setLoginStatus(clientRequest.getLoginStatus())
-                .setUserName(clientRequest.getUserName())
-                .setEmail(clientRequest.getEmail())
-                .setRegisterDate(clientRequest.getRegisterDate());
+//        user.setAccountSettings(clientRequest.getAccountSettings())
+//                .setId(clientRequest.getId())
+//                .setPassword(clientRequest.getPassword())
+//                .setLoginStatus(clientRequest.getLoginStatus())
+//                .setUserName(clientRequest.getUserName())
+//                .setEmail(clientRequest.getEmail())
+//                .setRegisterDate(clientRequest.getRegisterDate());
 
-        return clientRepository.save(client);
+        return clientRepository.save(user);
     }
 
     @Override
     public ResponseEntity<?> delete(Long id) {
-        Client client = clientRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Client", "Id", id));
+        User user = clientRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
 
-        clientRepository.delete(client);
+        clientRepository.delete(user);
         return ResponseEntity.ok().build();
     }
 
