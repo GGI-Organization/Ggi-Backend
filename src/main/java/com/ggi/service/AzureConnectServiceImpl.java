@@ -2,9 +2,7 @@ package com.ggi.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ggi.domain.service.AzureConnectService;
-import com.ggi.resource.response.BoundingBoxRes;
-import com.ggi.resource.response.OCRRes;
-import com.ggi.resource.response.PredictionRes;
+import com.ggi.resource.response.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,9 +27,9 @@ public class AzureConnectServiceImpl implements AzureConnectService {
                 // Construct the HTTP request
                 HttpClient httpClient = HttpClient.newHttpClient();
                 HttpRequest httpRequest = HttpRequest.newBuilder()
-                        .uri(URI.create("https://southcentralus.api.cognitive.microsoft.com/customvision/v3.0/Prediction/403c5403-8bd2-4e42-a6b4-41bdb40f7794/detect/iterations/Iteration3/image"))
+                        .uri(URI.create("https://inspry20220265-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/54b47c51-a382-4a9a-8c39-96a85e7f2e31/detect/iterations/Iteration3/image"))
                         .header("Content-Type", "application/octet-stream")
-                        .header("Prediction-key", "55ba7b5e720e43ffae34de0e66b68a15")
+                        .header("Prediction-key", "e1d75e363f844e6ca916e6e35954a74f")
                         .POST(HttpRequest.BodyPublishers.ofByteArray(fileBytes))
                         .build();
 
@@ -55,10 +53,72 @@ public class AzureConnectServiceImpl implements AzureConnectService {
     }
 
     @Override
-    public PredictionRes getPredictionFromMockup(MultipartFile imageMockup) {
-        return null;
+    public CompletableFuture<PredictionRes> getPredictionFromMockup(MultipartFile imageMockup) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                byte[] fileBytes = imageMockup.getBytes();
+                // Construct the HTTP request
+                HttpClient httpClient = HttpClient.newHttpClient();
+                HttpRequest httpRequest = HttpRequest.newBuilder()
+                        .uri(URI.create("https://inspry20220265-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/4087032c-fdf4-477a-83e7-9e666c879133/detect/iterations/Iteration2/image"))
+                        .header("Content-Type", "application/octet-stream")
+                        .header("Prediction-key", "e1d75e363f844e6ca916e6e35954a74f")
+                        .POST(HttpRequest.BodyPublishers.ofByteArray(fileBytes))
+                        .build();
+
+                // Send the HTTP request and get the response
+                HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+                if (response.statusCode() == 200) {
+                    // Convert result JSON to PredictionRes Class
+                    //File outputFile = new File("src/main/resources/bpmn.jpg");
+                    //try(OutputStream os = new FileOutputStream(outputFile)){
+                    //    os.write(image.getBytes());
+                    //}
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    return objectMapper.readValue(response.body(), PredictionRes.class);
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
+                return null;
+            }
+        });
     }
 
+    @Override
+    public ArrayList<MockupRes> getComponentDetails(ArrayList<MultipartFile> mockupsImg, ArrayList<TaskDetailRes> tasks, ArrayList<PredictionRes> predictionsRes) {
+        try {
+            ArrayList<MockupRes> mockups = new ArrayList<>();
+            for (int i = 0; i < tasks.size(); i++) {
+                // Cada prediction es de un mockup
+                TaskDetailRes task = tasks.get(i);
+                PredictionRes predictionRes = predictionsRes.get(i);
+                ArrayList<ComponentRes> components = new ArrayList<>();
+                for (var predictionTags : predictionRes.getPredictions()) {
+                    if (predictionTags.getProbability() >= 0.50) {
+                        var params = predictionTags.getBoundingBox();
+                        BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(mockupsImg.get(i).getBytes()));
+                        int imageWidth = bufferedImage.getWidth();
+                        int imageHeight = bufferedImage.getHeight();
+                        int x1 = (int) (params.getLeft() * imageWidth);
+                        int y1 = (int) (params.getTop() * imageHeight);
+                        int x2 = (int) ((params.getLeft() + params.getWidth()) * imageWidth);
+                        int y2 = (int) ((params.getTop() + params.getHeight()) * imageHeight);
+                        var component = new ComponentRes(predictionTags.getTagName(), x1, y2, x2 - x1, y2 - y1);
+                        components.add(component);
+                    }
+                }
+                MockupRes mockupRes = new MockupRes(components, task);
+                mockups.add(mockupRes);
+            }
+            return mockups;
+        } catch (Exception e) {
+            System.out.println("ERROR GET SIZE COMPONENT " + e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
     public String createDirectory() {
         String nameFolder = UUID.randomUUID().toString();
         String PATH = "src/main/resources/" + nameFolder;
@@ -69,6 +129,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
         return PATH;
     }
 
+    @Override
     public void saveMainBPMN(MultipartFile image, String path) {
         try {
             File outputFile = new File(path + "/" + "bpmn.png");
@@ -80,6 +141,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
         }
     }
 
+    @Override
     public BufferedImage getClippedImage(BoundingBoxRes params, MultipartFile image) {
         //BoundingBoxRes boundingBoxRes = predictionTags.getBoundingBox();
         try {
@@ -106,7 +168,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
             // Save bpmn image
             saveMainBPMN(image, PATH);
             for (var predictionTags : predictionRes.getPredictions()) {
-                if (predictionTags.getTagName().equals("Tarea") && predictionTags.getProbability() >= 0.85) {
+                if (predictionTags.getTagName().equals("tarea-usuario") && predictionTags.getProbability() >= 0.70) {
                     // Crop the image based on the provided coordinates
                     BufferedImage clippedImage = getClippedImage(predictionTags.getBoundingBox(), image);
 
@@ -159,7 +221,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
                                 }
                             }
                         }
-                        tasks.add(task);
+                        tasks.add(task.trim());
                     } else {
                         System.out.println("ERROR SERVICE OCR" + response.statusCode() + response.body());
                     }
@@ -170,6 +232,37 @@ public class AzureConnectServiceImpl implements AzureConnectService {
                 return tasks;
             }
         });
+    }
+
+    @Override
+    public ArrayList<TaskDetailRes> TaskFilter(ArrayList<String> tasks) {
+
+        // Datos de categorias
+        HashMap<String, ArrayList<String>> categories = new HashMap<>();
+        categories.put("create", new ArrayList<>(Arrays.asList("crea", "agrega", "construir", "publica", "añad", "registr")));
+        categories.put("read", new ArrayList<>(Arrays.asList("lee", "ver", "revis", "listar", "busca", "mostrar", "examinar")));
+        categories.put("update", new ArrayList<>(Arrays.asList("actualiza", "modifica", "edita", "cambia", "corregir", "corrige")));
+        categories.put("delete", new ArrayList<>(Arrays.asList("elimina", "borra", "suprim", "descarta", "remover", "deshacer")));
+
+        // Obtener las oraciones relacionadas al desarrollo de software
+        ArrayList<TaskDetailRes> taskDetailRes = new ArrayList<>();
+        boolean pass = true;
+        for (String sentence : tasks) {
+            pass = true;
+            for (String category : categories.keySet()) {
+                ArrayList<String> keywords = categories.get(category);
+                for (String keyword : keywords) {
+                    if (sentence.toLowerCase().contains(keyword.toLowerCase())) {
+                        taskDetailRes.add(new TaskDetailRes(sentence, category, keyword));
+                        pass = false;
+                        break;
+                    }
+                }
+                if (!pass)
+                    break;
+            }
+        }
+        return taskDetailRes;
     }
 
     @Override
