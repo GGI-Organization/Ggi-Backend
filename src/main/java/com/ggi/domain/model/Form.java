@@ -20,7 +20,7 @@ public class Form extends AuditModel {
     @JoinColumn(name = "form_manager_id", nullable = true)
     private FormManager formManager;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "diagram",
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "form",
             cascade = CascadeType.ALL)
     private List<Item> items;
 

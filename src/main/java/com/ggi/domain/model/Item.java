@@ -3,7 +3,9 @@ package com.ggi.domain.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-@MappedSuperclass
+@Entity
+@Table(name = "items")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Item extends AuditModel {
 
     @Id

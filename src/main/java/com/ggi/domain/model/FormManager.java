@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
-@Table(name = "forms_manager")
+@Table(name = "form_managers")
 public class FormManager extends AuditModel {
 
     @Id
@@ -16,7 +16,7 @@ public class FormManager extends AuditModel {
     @NotNull
     private String status;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "form_manager",
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "formManager",
             cascade = CascadeType.ALL)
     private List<Form> forms;
 

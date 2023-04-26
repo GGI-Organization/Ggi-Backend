@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "labels")
-public class Label extends AuditModel {
+public class Label extends Item {
 
     @Lob
     @NotNull
