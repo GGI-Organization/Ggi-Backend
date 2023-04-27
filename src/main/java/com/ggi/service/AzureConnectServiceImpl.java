@@ -95,7 +95,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
                 PredictionRes predictionRes = predictionsRes.get(i);
                 ArrayList<ComponentRes> components = new ArrayList<>();
                 for (var predictionTags : predictionRes.getPredictions()) {
-                    if (predictionTags.getProbability() >= 0.50) {
+                    if (predictionTags.getProbability() >= 0.75) {
                         var params = predictionTags.getBoundingBox();
                         BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(mockupsImg.get(i).getBytes()));
                         int imageWidth = bufferedImage.getWidth();

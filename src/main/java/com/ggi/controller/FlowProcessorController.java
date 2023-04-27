@@ -1,5 +1,6 @@
 package com.ggi.controller;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
@@ -7,6 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ggi.domain.service.AzureConnectService;
 import com.ggi.resource.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -72,4 +75,33 @@ public class FlowProcessorController {
             return ResponseEntity.status(500).body("Failed to upload image: " + e.getMessage());
         }
     }
+
+    @GetMapping(value = "/react-zip")
+    public ResponseEntity<FileSystemResource> reactZIP() {
+        try {
+            // Ruta donde se encuentra el archivo ZIP en el servidor
+            String pathFile = "src/main/resources/project-react.zip";
+
+            // Crea un objeto File con la ruta del archivo
+            File file = new File(pathFile);
+
+            // Crea un objeto FileSystemResource para leer el archivo del sistema de archivos
+            FileSystemResource fileSystemResource = new FileSystemResource(file);
+
+            // Crea los encabezados de la respuesta HTTP
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", "project-react.zip");
+
+            // Retorna la respuesta HTTP con el archivo ZIP y los encabezados
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(fileSystemResource.contentLength())
+                    .body(fileSystemResource);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+
 }
