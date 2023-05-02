@@ -80,7 +80,7 @@ public class FlowProcessorController {
     public ResponseEntity<FileSystemResource> reactZIP() {
         try {
             // Ruta donde se encuentra el archivo ZIP en el servidor
-            String pathFile = "src/main/resources/project-react.zip";
+            String pathFile = "src/main/resources/react-template.zip";
 
             // Crea un objeto File con la ruta del archivo
             File file = new File(pathFile);
@@ -91,7 +91,7 @@ public class FlowProcessorController {
             // Crea los encabezados de la respuesta HTTP
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", "project-react.zip");
+            headers.setContentDispositionFormData("attachment", "react-template.zip");
 
             // Retorna la respuesta HTTP con el archivo ZIP y los encabezados
             return ResponseEntity.ok()

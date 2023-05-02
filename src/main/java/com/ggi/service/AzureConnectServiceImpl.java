@@ -100,11 +100,13 @@ public class AzureConnectServiceImpl implements AzureConnectService {
                         BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(mockupsImg.get(i).getBytes()));
                         int imageWidth = bufferedImage.getWidth();
                         int imageHeight = bufferedImage.getHeight();
-                        int x1 = (int) (params.getLeft() * imageWidth);
-                        int y1 = (int) (params.getTop() * imageHeight);
-                        int x2 = (int) ((params.getLeft() + params.getWidth()) * imageWidth);
-                        int y2 = (int) ((params.getTop() + params.getHeight()) * imageHeight);
-                        var component = new ComponentRes(predictionTags.getTagName(), x1, y2, x2 - x1, y2 - y1);
+                        System.out.println(predictionTags.getTagName() + " - " + params.getLeft() + " - " + params.getTop());
+                        int x1 = (int) (params.getLeft() * 1680);
+                        int y1 = (int) (params.getTop() * 1080);
+                        int x2 = (int) ((params.getLeft() + params.getWidth()) * 1680);
+                        int y2 = (int) ((params.getTop() + params.getHeight()) * 1080);
+                        System.out.println(predictionTags.getTagName() + " - " + x1 + " - " + y2 + " - " + (x2 - x1) + " - " + (y2 - y1));
+                        var component = new ComponentRes(predictionTags.getTagName(), x1, y1, x2 - x1, y2 - y1);
                         components.add(component);
                     }
                 }
@@ -166,7 +168,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
             ArrayList<String> rootImageClipped = new ArrayList<>();
             String PATH = createDirectory();
             // Save bpmn image
-            saveMainBPMN(image, PATH);
+            //saveMainBPMN(image, PATH);
             for (var predictionTags : predictionRes.getPredictions()) {
                 if (predictionTags.getTagName().equals("tarea-usuario") && predictionTags.getProbability() >= 0.70) {
                     // Crop the image based on the provided coordinates
