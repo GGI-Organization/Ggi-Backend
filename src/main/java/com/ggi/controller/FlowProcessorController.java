@@ -5,26 +5,28 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ggi.domain.service.AzureConnectService;
-import com.ggi.resource.response.*;
+import com.ggi.service.interfaces.AzureConnectService;
+import com.ggi.payload.response.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@CrossOrigin("*")
-@RequestMapping("/api/v1/flow-processor")
+@RequestMapping("/api/flow-processor")
 public class FlowProcessorController {
     @Autowired
     private AzureConnectService azureConnectService;
 
     @PostMapping(value = "/bpmn-tasks", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @ResponseBody
-    public ResponseEntity<String> uploadImage(@RequestParam MultipartFile image) {
+    public ResponseEntity<String> uploadImage(@RequestParam(name = "image") MultipartFile image) {
         try {
             // Use API Custom Vision
             CompletableFuture<PredictionRes> asyncPredictionRes = azureConnectService.getPredictionFromBPMN(image);
@@ -49,6 +51,7 @@ public class FlowProcessorController {
     }
 
     @PostMapping(value = "/mockup-tasks", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @ResponseBody
     public ResponseEntity<String> uploadMockups(@RequestParam("mockups") MultipartFile[] mockups, @RequestParam("tasks") String tasks) {
         try {
@@ -77,6 +80,7 @@ public class FlowProcessorController {
     }
 
     @GetMapping(value = "/react-zip")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<FileSystemResource> reactZIP() {
         try {
             // Ruta donde se encuentra el archivo ZIP en el servidor
