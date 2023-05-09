@@ -9,19 +9,17 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(	name = "users",
+@Table(name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
                 @UniqueConstraint(columnNames = "email")
         })
-public class User extends AuditModel{
+public class User extends AuditModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
-    @Size(max = 20)
-    private String username;
+    private String fullname;
 
     @NotBlank
     @Size(max = 50)
@@ -33,7 +31,7 @@ public class User extends AuditModel{
     private String password;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "user_roles",
+    @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
@@ -41,10 +39,18 @@ public class User extends AuditModel{
     public User() {
     }
 
-    public User(String username, String email, String password) {
-        this.username = username;
+    public User(String fullname, String email, String password) {
         this.email = email;
         this.password = password;
+        this.fullname = fullname;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public Long getId() {
@@ -53,14 +59,6 @@ public class User extends AuditModel{
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getEmail() {

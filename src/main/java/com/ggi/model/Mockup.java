@@ -4,61 +4,48 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "mockups")
+@Table(name = "mockup")
 public class Mockup extends AuditModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // EStatus
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private EStatus status;
-
-    @NotNull
-    private String name;
-
-    @NotNull
-    @Column(name = "user_id")
-    private Long userId;
-
     @NotNull
     private String path;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "mockup_component_ui",
-            joinColumns = @JoinColumn(name = "mockup_id"),
-            inverseJoinColumns = @JoinColumn(name = "component_ui_id"))
-    private Set<ComponentUI> components = new HashSet<>();
+    @OneToMany(mappedBy = "mockup")
+    private List<ComponentUI> components;
 
-    public Mockup(){
+    @ManyToOne
+    @JoinColumn(name="fk_mockup_group")
+    private MockupGroup mockupGroup;
 
+    public Mockup() {
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Mockup(Long userId, EStatus status, String name, String path, Set<ComponentUI> components){
-        this.userId = userId;
-        this.status = status;
-        this.name = name;
+    public Mockup( String path, List<ComponentUI> components) {
         this.path = path;
         this.components = components;
     }
-    public Set<ComponentUI> getComponents() {
+
+    public MockupGroup getMockupGroup() {
+        return mockupGroup;
+    }
+
+    public void setMockupGroup(MockupGroup mockupGroup) {
+        this.mockupGroup = mockupGroup;
+    }
+
+    public List<ComponentUI> getComponents() {
         return components;
     }
 
-    public void setComponents(Set<ComponentUI> components) {
+    public void setComponents(List<ComponentUI> components) {
         this.components = components;
     }
 
@@ -70,14 +57,6 @@ public class Mockup extends AuditModel {
         this.path = path;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Long getId() {
         return id;
     }
@@ -86,11 +65,4 @@ public class Mockup extends AuditModel {
         this.id = id;
     }
 
-    public EStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(EStatus status) {
-        this.status = status;
-    }
 }

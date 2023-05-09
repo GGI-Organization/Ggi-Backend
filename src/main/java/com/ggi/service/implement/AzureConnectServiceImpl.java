@@ -1,9 +1,13 @@
 package com.ggi.service.implement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ggi.payload.dto.RootPredictionDto;
 import com.ggi.payload.response.*;
+import com.ggi.repository.DiagramBPMNRepository;
+import com.ggi.repository.MockupRepository;
 import com.ggi.service.interfaces.AzureConnectService;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +23,13 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class AzureConnectServiceImpl implements AzureConnectService {
+
+    @Autowired
+    private DiagramBPMNRepository diagramBPMNRepository;
+
+    @Autowired
+    private MockupRepository mockupRepository;
+
     @Override
     public CompletableFuture<PredictionRes> getPredictionFromBPMN(MultipartFile image) {
         return CompletableFuture.supplyAsync(() -> {
@@ -101,10 +112,10 @@ public class AzureConnectServiceImpl implements AzureConnectService {
                         int imageWidth = bufferedImage.getWidth();
                         int imageHeight = bufferedImage.getHeight();
                         System.out.println(predictionTags.getTagName() + " - " + params.getLeft() + " - " + params.getTop());
-                        int x1 = (int) (params.getLeft() * 1680);
-                        int y1 = (int) (params.getTop() * 1080);
-                        int x2 = (int) ((params.getLeft() + params.getWidth()) * 1680);
-                        int y2 = (int) ((params.getTop() + params.getHeight()) * 1080);
+                        long x1 = (int) (params.getLeft() * 1680);
+                        long y1 = (int) (params.getTop() * 1080);
+                        long x2 = (int) ((params.getLeft() + params.getWidth()) * 1680);
+                        long y2 = (int) ((params.getTop() + params.getHeight()) * 1080);
                         System.out.println(predictionTags.getTagName() + " - " + x1 + " - " + y2 + " - " + (x2 - x1) + " - " + (y2 - y1));
                         var component = new ComponentRes(predictionTags.getTagName(), x1, y1, x2 - x1, y2 - y1);
                         components.add(component);
@@ -121,14 +132,37 @@ public class AzureConnectServiceImpl implements AzureConnectService {
     }
 
     @Override
-    public String createDirectory() {
+    public String[] createDirectory() {
         String nameFolder = UUID.randomUUID().toString();
-        String PATH = "src/main/resources/" + nameFolder;
+        String PATH = "images/" + nameFolder;
         File directory = new File(PATH);
         if (!directory.exists()) {
             directory.mkdir();
         }
-        return PATH;
+        return new String[]{PATH, nameFolder};
+    }
+
+    @Override
+    public String saveMockupImages(MultipartFile[] images) {
+        try {
+            String nameFolder = UUID.randomUUID().toString();
+            String PATH = "images/" + nameFolder;
+            File directory = new File(PATH);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+            int count = 1;
+            for (var image : images) {
+                File outputFile = new File(PATH + "/" + "mockup_" + count + ".png");
+                try (OutputStream os = new FileOutputStream(outputFile)) {
+                    os.write(image.getBytes());
+                }
+                count++;
+            }
+            return nameFolder;
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     @Override
@@ -163,14 +197,16 @@ public class AzureConnectServiceImpl implements AzureConnectService {
     }
 
     @Override
-    public ArrayList<String> getRootsAboutPrediction(PredictionRes predictionRes, MultipartFile image) {
+    public RootPredictionDto getRootsAboutPrediction(PredictionRes predictionRes, MultipartFile image) {
         try {
             ArrayList<String> rootImageClipped = new ArrayList<>();
-            String PATH = createDirectory();
+            String[] paths = createDirectory();
+            var PATH = paths[0];
+            var mainFolder = paths[1];
             // Save bpmn image
-            //saveMainBPMN(image, PATH);
+            saveMainBPMN(image, PATH);
             for (var predictionTags : predictionRes.getPredictions()) {
-                if (predictionTags.getTagName().equals("tarea-usuario") && predictionTags.getProbability() >= 0.70) {
+                if ((predictionTags.getTagName().equals("tarea-usuario") || predictionTags.getTagName().equals("tarea-servicio")) && predictionTags.getProbability() >= 0.70) {
                     // Crop the image based on the provided coordinates
                     BufferedImage clippedImage = getClippedImage(predictionTags.getBoundingBox(), image);
 
@@ -182,7 +218,8 @@ public class AzureConnectServiceImpl implements AzureConnectService {
                     rootImageClipped.add(fileName);
                 }
             }
-            return rootImageClipped;
+            RootPredictionDto rootPredictionDto = new RootPredictionDto(rootImageClipped, mainFolder);
+            return rootPredictionDto;
         } catch (Exception e) {
             System.out.println("ERROR " + e.getMessage());
             return null;

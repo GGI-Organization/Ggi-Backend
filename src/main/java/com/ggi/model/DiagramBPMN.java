@@ -3,6 +3,7 @@ package com.ggi.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -30,12 +31,22 @@ public class DiagramBPMN extends AuditModel {
     @NotNull
     private String path;
 
+    @OneToMany(mappedBy = "diagramBPMN")
+    private Set<Task> tasks;
+
     public DiagramBPMN(){}
-    public DiagramBPMN(Long userId, EStatus status, String name, String path, Set<Task> tasks){
+    public DiagramBPMN(Long userId, EStatus status, String name, String path){
         this.userId = userId;
         this.status = status;
         this.name = name;
         this.path = path;
+    }
+
+    public Set<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(Set<Task> tasks) {
         this.tasks = tasks;
     }
 
@@ -45,23 +56,6 @@ public class DiagramBPMN extends AuditModel {
 
     public void setUserId(Long userId) {
         this.userId = userId;
-    }
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(	name = "diagram_bpmn_task",
-            joinColumns = @JoinColumn(name = "diagram_bpmn_id"),
-            inverseJoinColumns = @JoinColumn(name = "task_id"))
-
-
-
-    private Set<Task> tasks = new HashSet<>();
-
-    public Set<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(Set<Task> tasks) {
-        this.tasks = tasks;
     }
 
     public String getPath() {

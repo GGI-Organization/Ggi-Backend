@@ -42,11 +42,10 @@ public class DiagramBPMNServiceImpl implements DiagramBPMNService {
 
     @Override
     public DiagramBPMN create(DiagramReq diagramReq) {
-        var newTasks = diagramReq.getTasks().stream().map(task -> new Task(task.getName())).toList();
-        taskRepository.saveAll(newTasks);
-        Set<Task> targetSet = new HashSet<Task>(newTasks);
-        var newDiagramBPMN = new DiagramBPMN(diagramReq.getUserId(), EStatus.ACTIVO, diagramReq.getName(), diagramReq.getPath(), targetSet);
+        var newDiagramBPMN = new DiagramBPMN(diagramReq.getUserId(), EStatus.valueOf(diagramReq.getStatus()), diagramReq.getName(), diagramReq.getPath());
         diagramBPMNRepository.save(newDiagramBPMN);
+        var newTasks = diagramReq.getTasks().stream().map(task -> new Task(task.getName(), newDiagramBPMN )).toList();
+        taskRepository.saveAll(newTasks);
         return newDiagramBPMN;
     }
 

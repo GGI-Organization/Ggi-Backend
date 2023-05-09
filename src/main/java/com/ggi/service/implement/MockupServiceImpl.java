@@ -1,12 +1,11 @@
 package com.ggi.service.implement;
 
-import com.ggi.model.ComponentUI;
-import com.ggi.model.EComponent;
-import com.ggi.model.EStatus;
-import com.ggi.model.Mockup;
+import com.ggi.model.*;
 import com.ggi.payload.request.MockupDetailReq;
 import com.ggi.payload.request.MockupReq;
+import com.ggi.payload.response.PredictionMockupRes;
 import com.ggi.repository.ComponentUIRepository;
+import com.ggi.repository.MockupGroupRepository;
 import com.ggi.repository.MockupRepository;
 import com.ggi.service.interfaces.MockupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +26,13 @@ public class MockupServiceImpl implements MockupService {
     @Autowired
     private ComponentUIRepository componentUIRepository;
 
+    @Autowired
+    private MockupGroupRepository mockupGroupRepository;
+
     @Override
-    public Page<Mockup> getAll(Pageable pageable, Long userId) {
-        var result = mockupRepository.findAll(pageable).stream().filter(mockup -> Objects.equals(mockup.getUserId(), userId)).toList();
-        return new PageImpl<Mockup>(result);
+    public Page<MockupGroup> getAll(Pageable pageable, Long userId) {
+        var result = mockupGroupRepository.findAll(pageable).stream().filter(mockup -> Objects.equals(mockup.getUserId(), userId)).toList();
+        return new PageImpl<MockupGroup>(result);
     }
 
     @Override
@@ -39,17 +41,27 @@ public class MockupServiceImpl implements MockupService {
     }
 
     @Override
-    public ArrayList<Mockup> create(MockupReq mockupReq) {
-        ArrayList<Mockup> mockupsAdded = new ArrayList<>();
-        for (var mockup : mockupReq.getMockups()) {
-            var newComponents = mockup.getComponents().stream().map(component -> new ComponentUI(EComponent.valueOf(component.getName()), component.getPosX(), component.getPosY(), component.getWidth(), component.getHeight())).toList();
-            componentUIRepository.saveAll(newComponents);
-            Set<ComponentUI> targetSet = new HashSet<ComponentUI>(newComponents);
-            var newMockup = new Mockup(mockupReq.getUserId(),EStatus.ACTIVO,mockup.getName(), mockup.getPath(), targetSet);
-            mockupRepository.save(newMockup);
-            mockupsAdded.add(newMockup);
+    public boolean create(String nameFolder, Long userId, PredictionMockupRes predictionMockupRes) {
+        try {
+            int countMockup = 1;
+            var mockupsAdd = new ArrayList<Mockup>();
+            for (var predictionMockup : predictionMockupRes.getMockups()) {
+                var componentsAdd = new ArrayList<ComponentUI>();
+                for (var component : predictionMockup.getComponents()) {
+                    ComponentUI componentUI = new ComponentUI(EComponent.valueOf(component.getType()), component.getPosX(), component.getPosY(), component.getWidth(), component.getHeight());
+                    componentsAdd.add(componentUI);
+                }
+                //componentUIRepository.saveAll(componentsAdd);
+                Mockup mockup = new Mockup(nameFolder + "/mockup_" + countMockup + ".png", componentsAdd);
+                mockupsAdd.add(mockup);
+            }
+            MockupGroup mockupGroup = new MockupGroup(userId, "", nameFolder, EStatus.EN_PROCESO, mockupsAdd);
+            mockupGroupRepository.save(mockupGroup);
+            return true;
+        } catch (Exception e) {
+            System.out.println("error save mockup info " + e.getMessage());
+            return false;
         }
-        return mockupsAdded;
     }
 
     @Override

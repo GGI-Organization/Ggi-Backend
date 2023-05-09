@@ -1,37 +1,39 @@
-package com.ggi.payload.request;
+package com.ggi.payload.response;
 
+import com.ggi.model.DiagramBPMN;
 import com.ggi.model.EStatus;
 
 import java.util.ArrayList;
 
-public class DiagramReq {
-    private String status;
+public class DiagramBPMNRes {
+    private Long id;
+    private EStatus status;
     private String name;
     private String path;
-    private Long userId;
-    private ArrayList<TaskReq> tasks;
-    public DiagramReq(){}
-    public DiagramReq(String status, String name, String path, Long userId, ArrayList<TaskReq> tasks){
+    private ArrayList<TaskRes> tasks;
+
+    public DiagramBPMNRes(){}
+    public DiagramBPMNRes(Long id, EStatus status, String name, String path, ArrayList<TaskRes> tasks){
+        this.id = id;
         this.status = status;
         this.name = name;
         this.path = path;
-        this.userId = userId;
         this.tasks = tasks;
     }
 
-    public Long getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getStatus() {
+    public EStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(EStatus status) {
         this.status = status;
     }
 
@@ -51,11 +53,11 @@ public class DiagramReq {
         this.path = path;
     }
 
-    public ArrayList<TaskReq> getTasks() {
+    public ArrayList<TaskRes> getTasks() {
         return tasks;
     }
 
-    public void setTasks(ArrayList<TaskReq> tasks) {
+    public void setTasks(ArrayList<TaskRes> tasks) {
         this.tasks = tasks;
     }
 }

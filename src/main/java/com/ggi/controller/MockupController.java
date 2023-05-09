@@ -33,7 +33,7 @@ public class MockupController {
         var res = new DefaultRes<>();
         try {
             var username = jwtUtils.getUserNameFromJwtToken(token.split(" ")[1]);
-            var user = userRepository.findByUsername(username);
+            var user = userRepository.findByEmail(username);
             Pageable pageable = new DefaultPageable();
             var diagramsBPMN = mockupService.getAll(pageable, user.get().getId());
             res = new DefaultRes<>("", false);
@@ -50,9 +50,9 @@ public class MockupController {
     public ResponseEntity<?> add(Authentication authentication, @Valid @RequestBody MockupReq mockupReq) {
         var res = new DefaultRes<>();
         try {
-            var newMockups = mockupService.create(mockupReq);
+            // var newMockups = mockupService.create(mockupReq);
             res = new DefaultRes<>("Mockups agregado correctamente", false);
-            res.setResult(newMockups);
+            //res.setResult(newMockups);
             return ResponseEntity.ok().body(res);
         }catch(Exception e){
             res = new DefaultRes<>(e.getMessage(),true);

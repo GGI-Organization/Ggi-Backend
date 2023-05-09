@@ -3,10 +3,18 @@ package com.ggi.payload.request;
 import java.util.Set;
 
 public class SignupReq {
-    private String username;
     private String password;
     private String email;
+    private String fullname;
     private Set<String> role;
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
 
     public Set<String> getRole() {
         return role;
@@ -22,14 +30,6 @@ public class SignupReq {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPassword() {

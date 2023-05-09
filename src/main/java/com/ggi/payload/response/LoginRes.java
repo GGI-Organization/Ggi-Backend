@@ -4,16 +4,15 @@ import java.util.List;
 
 public class LoginRes {
     private String token;
-    private String type;
     private Long id;
-    private String username;
+    private String fullname;
     private String email;
     private List<String> roles;
 
-    public LoginRes(Long id, String token, String username, String email, List<String> roles){
+    public LoginRes(Long id, String token, String fullname, String email, List<String> roles){
         this.id = id;
         this.token = token;
-        this.username = username;
+        this.fullname = fullname;
         this.email = email;
         this.roles = roles;
     }
@@ -26,14 +25,6 @@ public class LoginRes {
         this.token = token;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public Long getId() {
         return id;
     }
@@ -42,12 +33,12 @@ public class LoginRes {
         this.id = id;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFullname() {
+        return fullname;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setFullname(String username) {
+        this.fullname = username;
     }
 
     public String getEmail() {

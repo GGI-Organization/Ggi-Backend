@@ -17,6 +17,9 @@ public class ComponentUI extends AuditModel {
     private Long posX;
     @NotNull
     private Long posY;
+    @ManyToOne
+    @JoinColumn(name="fk_mockup")
+    private Mockup mockup;
     @NotNull
     private Long width;
     @NotNull
@@ -28,6 +31,14 @@ public class ComponentUI extends AuditModel {
         this.posY = posY;
         this.width = width;
         this.height = height;
+    }
+
+    public Mockup getMockup() {
+        return mockup;
+    }
+
+    public void setMockup(Mockup mockup) {
+        this.mockup = mockup;
     }
 
     public Long getId() {

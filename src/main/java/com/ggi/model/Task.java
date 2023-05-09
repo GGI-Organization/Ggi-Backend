@@ -8,23 +8,36 @@ import jakarta.validation.constraints.NotNull;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @NotNull
     private String name;
 
+    @ManyToOne
+    @JoinColumn(name="fk_diagram")
+    private DiagramBPMN diagramBPMN;
+
     public Task() {
     }
 
-    public Task(String name){
+    public DiagramBPMN getDiagramBPMN() {
+        return diagramBPMN;
+    }
+
+    public void setDiagramBPMN(DiagramBPMN diagramBPMN) {
+        this.diagramBPMN = diagramBPMN;
+    }
+
+    public Task(String name, DiagramBPMN diagramBPMN){
+        this.diagramBPMN = diagramBPMN;
         this.name = name;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

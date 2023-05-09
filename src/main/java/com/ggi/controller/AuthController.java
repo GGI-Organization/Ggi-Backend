@@ -54,8 +54,7 @@ public class AuthController {
         var res = new DefaultRes<LoginRes>();
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-            System.out.println(authentication);
+                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
             String jwt = jwtUtils.generateJwtToken(authentication);
 
@@ -65,11 +64,12 @@ public class AuthController {
                     .collect(Collectors.toList());
 
             res = new DefaultRes<LoginRes>("", false);
-            var loginRes = new LoginRes(userDetails.getId(), jwt, userDetails.getUsername(), userDetails.getEmail(), roles);
+            var user = userRepository.findById(userDetails.getId());
+            var loginRes = new LoginRes(userDetails.getId(), jwt, user.get().getFullname(), userDetails.getEmail(), roles);
             res.setResult(loginRes);
 
             return ResponseEntity.ok().body(res);
-        }catch (Exception e){
+        } catch (Exception e) {
             res = new DefaultRes<LoginRes>(e.getMessage(), true);
             return ResponseEntity.badRequest().body(res);
         }
@@ -79,14 +79,13 @@ public class AuthController {
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupReq signUpRequest) {
         var res = new DefaultRes();
         try {
-            var findUser = userRepository.existsByUsername(signUpRequest.getUsername());
-            System.out.println(findUser);
-            if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-                res = new DefaultRes("Error: Username is already taken!", true);
-                return ResponseEntity
-                        .badRequest()
-                        .body(res);
-            }
+            //var findUser = userRepository.existsByUsername(signUpRequest.getUsername());
+            //if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+            //    res = new DefaultRes("Error: Username is already taken!", true);
+            //    return ResponseEntity
+            //            .badRequest()
+            //            .body(res);
+            //}
 
             if (userRepository.existsByEmail(signUpRequest.getEmail())) {
                 res = new DefaultRes("Error: Email is already in use!", true);
@@ -96,7 +95,7 @@ public class AuthController {
             }
 
             // Create new user's account
-            User user = new User(signUpRequest.getUsername(),
+            User user = new User(signUpRequest.getFullname(),
                     signUpRequest.getEmail(),
                     encoder.encode(signUpRequest.getPassword()));
 

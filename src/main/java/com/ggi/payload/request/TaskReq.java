@@ -4,6 +4,13 @@ public class TaskReq {
 
     private String name;
 
+    public TaskReq() {
+    }
+
+    public TaskReq(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }

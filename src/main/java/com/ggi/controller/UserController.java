@@ -41,7 +41,7 @@ public class UserController {
     public ResponseEntity<?> edit(@PathVariable(value = "id") Long id, @Valid @RequestBody ProfileReq profileReq) {
         var res = new DefaultRes<>();
         try {
-            var user = new User("", profileReq.getEmail(), "");
+            var user = new User(profileReq.getFullname(), profileReq.getEmail(), profileReq.getPassword());
             var userSave = userService.update(id, user);
             res = new DefaultRes<>("", false);
             res.setResult(userSave);
