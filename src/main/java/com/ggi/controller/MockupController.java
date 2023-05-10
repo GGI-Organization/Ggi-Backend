@@ -29,15 +29,15 @@ public class MockupController {
 
     @GetMapping("")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> getAll(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getAll(@RequestParam(required = false, name = "name") String name, @RequestHeader("Authorization") String token) {
         var res = new DefaultRes<>();
         try {
             var username = jwtUtils.getUserNameFromJwtToken(token.split(" ")[1]);
             var user = userRepository.findByEmail(username);
             Pageable pageable = new DefaultPageable();
-            var diagramsBPMN = mockupService.getAll(pageable, user.get().getId());
+            var mockupsGroup = mockupService.getAll(pageable, name, user.get().getId());
             res = new DefaultRes<>("", false);
-            res.setResult(diagramsBPMN);
+            res.setResult(mockupsGroup);
             return ResponseEntity.ok().body(res);
         }catch(Exception e){
             res = new DefaultRes<>(e.getMessage(),true);

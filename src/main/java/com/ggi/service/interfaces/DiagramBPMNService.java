@@ -9,9 +9,9 @@ import org.springframework.http.ResponseEntity;
 import java.util.Optional;
 
 public interface DiagramBPMNService {
-    Page<DiagramBPMN> getAll(Pageable pageable, Long userId);
+    Page<DiagramBPMN> getAll(Pageable pageable, String name, Long userId);
     Optional<DiagramBPMN> getById(Long id);
     DiagramBPMN create(DiagramReq diagramReq);
-    //DiagramBPMN update(Long id, DiagramBPMN diagramBPMN);
+    boolean update(String name, String path, Long userId);
     ResponseEntity<?> delete(Long id);
 }

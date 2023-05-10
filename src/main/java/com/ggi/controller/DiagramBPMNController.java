@@ -37,22 +37,16 @@ public class DiagramBPMNController {
     @GetMapping("")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @ResponseBody
-    public ResponseEntity<?> getAll(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> getAll(@RequestParam(required = false, name = "name") String name, @RequestHeader("Authorization") String token) {
         var res = new DefaultRes<>();
         try {
             var username = jwtUtils.getUserNameFromJwtToken(token.split(" ")[1]);
             var user = userRepository.findByEmail(username);
             Pageable pageable = new DefaultPageable();
             System.out.println(user);
-            var diagramsBPMN = diagramBPMNService.getAll(pageable, user.get().getId());
-
-            var diagrams = diagramsBPMN.stream().map(diagramBPMN -> {
-                var tasks = diagramBPMN.getTasks().stream().map(task -> new TaskRes(task.getId(), task.getName())).toList();
-                var newtasks = new ArrayList<>(tasks);
-                return new DiagramBPMNRes(diagramBPMN.getId(), diagramBPMN.getStatus(), diagramBPMN.getName(), diagramBPMN.getPath(), newtasks);
-            }).toList();
+            var diagramsBPMN = diagramBPMNService.getAll(pageable, name, user.get().getId());
             res = new DefaultRes<>("", false);
-            res.setResult(diagrams);
+            res.setResult(diagramsBPMN);
             return ResponseEntity.status(200).body(res);
         } catch (HttpMessageNotWritableException e) {
             System.out.println("error bpmn " + e.getMessage());

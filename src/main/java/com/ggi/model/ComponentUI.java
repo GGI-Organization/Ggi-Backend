@@ -1,5 +1,7 @@
 package com.ggi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -19,18 +21,20 @@ public class ComponentUI extends AuditModel {
     private Long posY;
     @ManyToOne
     @JoinColumn(name="fk_mockup")
+    @JsonIgnore
     private Mockup mockup;
     @NotNull
     private Long width;
     @NotNull
     private Long height;
     public ComponentUI(){}
-    public ComponentUI(EComponent name, Long posX, Long posY, Long width, Long height){
+    public ComponentUI(EComponent name, Long posX, Long posY, Long width, Long height, Mockup mockup){
         this.name = name;
         this.posX = posX;
         this.posY = posY;
         this.width = width;
         this.height = height;
+        this.mockup = mockup;
     }
 
     public Mockup getMockup() {

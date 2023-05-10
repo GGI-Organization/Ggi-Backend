@@ -1,6 +1,7 @@
 package com.ggi.service.implement;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ggi.model.EComponent;
 import com.ggi.payload.dto.RootPredictionDto;
 import com.ggi.payload.response.*;
 import com.ggi.repository.DiagramBPMNRepository;
@@ -117,7 +118,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
                         long x2 = (int) ((params.getLeft() + params.getWidth()) * 1680);
                         long y2 = (int) ((params.getTop() + params.getHeight()) * 1080);
                         System.out.println(predictionTags.getTagName() + " - " + x1 + " - " + y2 + " - " + (x2 - x1) + " - " + (y2 - y1));
-                        var component = new ComponentRes(predictionTags.getTagName(), x1, y1, x2 - x1, y2 - y1);
+                        var component = new ComponentRes(getComponentType(predictionTags.getTagName()).toString(), x1, y1, x2 - x1, y2 - y1);
                         components.add(component);
                     }
                 }
@@ -129,6 +130,22 @@ public class AzureConnectServiceImpl implements AzureConnectService {
             System.out.println("ERROR GET SIZE COMPONENT " + e.getMessage());
             return null;
         }
+    }
+
+    public EComponent getComponentType(String type){
+        var enumType = EComponent.OTHER;
+        return switch (type) {
+            case "block-text" -> EComponent.BLOCK_TEXT;
+            case "button" -> EComponent.BUTTON;
+            case "checkbox" -> EComponent.CHECKBOX;
+            case "header" -> EComponent.HEADER;
+            case "input" -> EComponent.INPUT;
+            case "input-search" -> EComponent.INPUT_SEARCH;
+            case "label" -> EComponent.LABEL;
+            case "select" -> EComponent.SELECT;
+            case "table" -> EComponent.TABLE;
+            default -> EComponent.OTHER;
+        };
     }
 
     @Override

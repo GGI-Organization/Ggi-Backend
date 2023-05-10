@@ -1,12 +1,14 @@
 package com.ggi.model;
 
 public enum EComponent {
-    BLOCK_TEST,
+    BLOCK_TEXT,
     INPUT,
     INPUT_SEARCH,
     TABLE,
     LABEL,
     BUTTON,
     SELECT,
-    CHECKBOX
+    CHECKBOX,
+    HEADER,
+    OTHER
 }

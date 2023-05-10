@@ -31,12 +31,11 @@ public class MockupGroup extends AuditModel {
 
     public MockupGroup(){}
 
-    public MockupGroup(Long userId, String name, String path, EStatus status, List<Mockup> mockups){
+    public MockupGroup(Long userId, String name, String path, EStatus status){
         this.userId = userId;
         this.name = name;
         this.path = path;
         this.status = status;
-        this.mockups = mockups;
     }
 
     public EStatus getStatus() {

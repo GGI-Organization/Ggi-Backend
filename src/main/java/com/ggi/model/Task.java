@@ -1,5 +1,6 @@
 package com.ggi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -15,6 +16,7 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name="fk_diagram")
+    @JsonIgnore
     private DiagramBPMN diagramBPMN;
 
     public Task() {

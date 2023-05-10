@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ggi.model.EStatus;
 import com.ggi.payload.dto.RootPredictionDto;
 import com.ggi.payload.request.DiagramReq;
+import com.ggi.payload.request.FlowProcessSaveReq;
 import com.ggi.payload.request.TaskReq;
 import com.ggi.repository.UserRepository;
 import com.ggi.security.jwt.JwtUtils;
@@ -79,6 +80,31 @@ public class FlowProcessorController {
         }
     }
 
+    @PutMapping(value = "")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    @ResponseBody
+    public ResponseEntity<?> saveFlowProcess(@RequestBody FlowProcessSaveReq req, @RequestHeader("Authorization") String token) {
+        var res = new DefaultRes<>();
+        try {
+            // Get user Id
+            var username = jwtUtils.getUserNameFromJwtToken(token.split(" ")[1]);
+            var user = userRepository.findByEmail(username);
+
+            // Save bpmn name
+            var bpmnIsSaved = diagramBPMNService.update(req.getName(), req.getPathDiagramBPMN(), user.get().getId());
+            if (!bpmnIsSaved)  throw new Exception("Error update BPMN");
+            // Save mockup group name
+            var mockupIsSaved = mockupService.update(req.getName(), req.getPathMockupGroup(), user.get().getId());
+            if (!mockupIsSaved) throw new Exception("Error update MOCKUP");
+
+            res = new DefaultRes<>("Guardado correctamente", false);
+            return ResponseEntity.status(200).body(res);
+        } catch (Exception e) {
+            res = new DefaultRes<>("Failed to upload image: " + e.getMessage(), true);
+            return ResponseEntity.status(500).body(res);
+        }
+    }
+
     @PostMapping(value = "/mockup-tasks", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @ResponseBody
@@ -109,7 +135,8 @@ public class FlowProcessorController {
             var user = userRepository.findByEmail(username);
             // Save all image mockups
             String nameFolder = azureConnectService.saveMockupImages(mockups);
-            var isAdded = mockupService.create(nameFolder, user.get().getId(), predictionMockupRes);
+            predictionMockupRes.setPath(nameFolder);
+            var isAdded = mockupService.create(nameFolder, user.get().getId(), predictionMockupRes, tasksRes);
             if (!isAdded) throw new Exception("Error to save info mockup group");
 
             res = new DefaultRes<>("", false);
@@ -148,6 +175,8 @@ public class FlowProcessorController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
+
 
 
 }

@@ -4,6 +4,7 @@ import com.ggi.model.*;
 import com.ggi.payload.request.MockupDetailReq;
 import com.ggi.payload.request.MockupReq;
 import com.ggi.payload.response.PredictionMockupRes;
+import com.ggi.payload.response.TasksRes;
 import com.ggi.repository.ComponentUIRepository;
 import com.ggi.repository.MockupGroupRepository;
 import com.ggi.repository.MockupRepository;
@@ -30,8 +31,14 @@ public class MockupServiceImpl implements MockupService {
     private MockupGroupRepository mockupGroupRepository;
 
     @Override
-    public Page<MockupGroup> getAll(Pageable pageable, Long userId) {
-        var result = mockupGroupRepository.findAll(pageable).stream().filter(mockup -> Objects.equals(mockup.getUserId(), userId)).toList();
+    public Page<MockupGroup> getAll(Pageable pageable, String name, Long userId) {
+        List<MockupGroup> result;
+        if (name == null || name.isEmpty()){
+            result = mockupGroupRepository.findAll(pageable).stream().filter(mockup -> Objects.equals(mockup.getUserId(), userId) && mockup.getStatus() == EStatus.ACTIVO).toList();
+
+        }else{
+            result = mockupGroupRepository.findAll(pageable).stream().filter(mockup -> Objects.equals(mockup.getUserId(), userId) && mockup.getStatus() == EStatus.ACTIVO && mockup.getName().trim().toLowerCase().contains(name.trim().toLowerCase())).toList();
+        }
         return new PageImpl<MockupGroup>(result);
     }
 
@@ -41,27 +48,43 @@ public class MockupServiceImpl implements MockupService {
     }
 
     @Override
-    public boolean create(String nameFolder, Long userId, PredictionMockupRes predictionMockupRes) {
+    public boolean create(String nameFolder, Long userId, PredictionMockupRes predictionMockupRes, TasksRes taskRes) {
         try {
+            // Save mockup group
+            MockupGroup mockupGroup = new MockupGroup(userId, "", nameFolder, EStatus.EN_PROCESO);
+            mockupGroupRepository.save(mockupGroup);
+            int indexTask = 0;
+            var tasks = taskRes.getTasks();
             int countMockup = 1;
-            var mockupsAdd = new ArrayList<Mockup>();
             for (var predictionMockup : predictionMockupRes.getMockups()) {
+                // Save mockups
+                var task = tasks.get(indexTask).getTask();
+                Mockup mockup = new Mockup(nameFolder + "/mockup_" + countMockup + ".png", task, mockupGroup);
+                mockupRepository.save(mockup);
                 var componentsAdd = new ArrayList<ComponentUI>();
                 for (var component : predictionMockup.getComponents()) {
-                    ComponentUI componentUI = new ComponentUI(EComponent.valueOf(component.getType()), component.getPosX(), component.getPosY(), component.getWidth(), component.getHeight());
+                    ComponentUI componentUI = new ComponentUI(EComponent.valueOf(component.getType()), component.getPosX(), component.getPosY(), component.getWidth(), component.getHeight(), mockup);
                     componentsAdd.add(componentUI);
                 }
-                //componentUIRepository.saveAll(componentsAdd);
-                Mockup mockup = new Mockup(nameFolder + "/mockup_" + countMockup + ".png", componentsAdd);
-                mockupsAdd.add(mockup);
+                componentUIRepository.saveAll(componentsAdd);
+                countMockup++;
+                indexTask++;
             }
-            MockupGroup mockupGroup = new MockupGroup(userId, "", nameFolder, EStatus.EN_PROCESO, mockupsAdd);
-            mockupGroupRepository.save(mockupGroup);
             return true;
         } catch (Exception e) {
             System.out.println("error save mockup info " + e.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public boolean update(String name, String path, Long userId) {
+        var mockupGroup = mockupGroupRepository.findByUserIdAndPath(userId, path);
+        if (mockupGroup.isEmpty()) return false;
+        mockupGroup.get().setName(name);
+        mockupGroup.get().setStatus(EStatus.ACTIVO);
+        mockupGroupRepository.save(mockupGroup.get());
+        return true;
     }
 
     @Override

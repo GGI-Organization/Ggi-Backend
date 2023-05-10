@@ -1,5 +1,7 @@
 package com.ggi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -18,19 +20,32 @@ public class Mockup extends AuditModel {
     @NotNull
     private String path;
 
+    @NotNull
+    private String task;
+
     @OneToMany(mappedBy = "mockup")
     private List<ComponentUI> components;
 
     @ManyToOne
     @JoinColumn(name="fk_mockup_group")
+    @JsonIgnore
     private MockupGroup mockupGroup;
 
     public Mockup() {
     }
 
-    public Mockup( String path, List<ComponentUI> components) {
+    public Mockup( String path, String task, MockupGroup mockupGroup) {
         this.path = path;
-        this.components = components;
+        this.task = task;
+        this.mockupGroup = mockupGroup;
+    }
+
+    public String getTask() {
+        return task;
+    }
+
+    public void setTask(String task) {
+        this.task = task;
     }
 
     public MockupGroup getMockupGroup() {

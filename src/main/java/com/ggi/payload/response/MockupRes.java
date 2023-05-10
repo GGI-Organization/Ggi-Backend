@@ -3,8 +3,9 @@ package com.ggi.payload.response;
 import java.util.ArrayList;
 
 public class MockupRes {
-    public ArrayList<ComponentRes> components;
-    public TaskDetailRes task;
+    private ArrayList<ComponentRes> components;
+    private TaskDetailRes task;
+    public MockupRes(){}
     public MockupRes(ArrayList<ComponentRes> components, TaskDetailRes task){
         this.components = components;
         this.task = task;
