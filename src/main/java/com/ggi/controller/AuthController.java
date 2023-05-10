@@ -131,7 +131,7 @@ public class AuthController {
 
             user.setRoles(roles);
             userRepository.save(user);
-            res = new DefaultRes("User registered successfully!", false);
+            res = new DefaultRes("Usuario registrado correctamente!", false);
             return ResponseEntity.ok(res);
         } catch (Exception e) {
             res = new DefaultRes(e.getMessage(), true);
