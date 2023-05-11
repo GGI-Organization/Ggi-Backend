@@ -45,6 +45,21 @@ public class UserController {
         }
     }
 
+    @GetMapping("{id}")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<?> getById(@PathVariable(value = "id") Long id) {
+        var res = new DefaultRes<>();
+        try {
+            var user = userService.getById(id);
+            res = new DefaultRes<>("", false);
+            res.setResult(user);
+            return ResponseEntity.ok().body(res);
+        }catch(Exception e){
+            res = new DefaultRes<>(e.getMessage(),true);
+            return ResponseEntity.badRequest().body(res);
+        }
+    }
+
     @PutMapping("{id}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     public ResponseEntity<?> edit(@PathVariable(value = "id") Long id, @Valid @RequestBody ProfileReq profileReq) {
@@ -66,9 +81,9 @@ public class UserController {
         }
     }
 
-    @GetMapping("{id}")
+    @DeleteMapping("{id}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
-    public ResponseEntity<?> findById(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<?> deleteById(@PathVariable(value = "id") Long id) {
         var res = new DefaultRes<>();
         try {
             var user = userService.getById(id);
@@ -76,8 +91,8 @@ public class UserController {
                 res = new DefaultRes<>("Usuario no existe", true);
                 return ResponseEntity.status(400).body(res);
             }
+            userService.delete(id);
             res = new DefaultRes<>("", false);
-            res.setResult(user.get());
             return ResponseEntity.ok().body(res);
         }catch(Exception e){
             res = new DefaultRes<>(e.getMessage(),true);

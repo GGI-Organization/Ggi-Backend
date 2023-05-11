@@ -71,7 +71,7 @@ public class DiagramBPMNController {
         }
     }
 
-    @GetMapping("/id")
+    @GetMapping("{id}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @ResponseBody
     public ResponseEntity<?> findById(@PathVariable(value = "id") Long id) {
@@ -91,7 +91,7 @@ public class DiagramBPMNController {
         }
     }
 
-    @DeleteMapping("/id")
+    @DeleteMapping("{id}")
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @ResponseBody
     public ResponseEntity<?> deleteById(@PathVariable(value = "id") Long id) {
