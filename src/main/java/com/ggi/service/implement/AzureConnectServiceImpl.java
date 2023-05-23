@@ -7,6 +7,10 @@ import com.ggi.payload.response.*;
 import com.ggi.repository.DiagramBPMNRepository;
 import com.ggi.repository.MockupRepository;
 import com.ggi.service.interfaces.AzureConnectService;
+import com.google.auth.oauth2.ServiceAccountCredentials;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageOptions;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -132,7 +137,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
         }
     }
 
-    public EComponent getComponentType(String type){
+    public EComponent getComponentType(String type) {
         var enumType = EComponent.OTHER;
         return switch (type) {
             case "block-text" -> EComponent.BLOCK_TEXT;
@@ -151,34 +156,48 @@ public class AzureConnectServiceImpl implements AzureConnectService {
     @Override
     public String[] createDirectory() {
         String nameFolder = UUID.randomUUID().toString();
-        String PATH = "images/" + nameFolder;
-        File directory = new File(PATH);
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
-        return new String[]{PATH, nameFolder};
+        //String PATH = "images/" + nameFolder;
+        //File directory = new File(PATH);
+        //if (!directory.exists()) {
+        //    directory.mkdir();
+        //}
+        return new String[]{"", nameFolder};
     }
 
     @Override
     public String saveMockupImages(MultipartFile[] images) {
         try {
             String nameFolder = UUID.randomUUID().toString();
-            String PATH = "images/" + nameFolder;
-            File directory = new File(PATH);
-            if (!directory.exists()) {
-                directory.mkdir();
-            }
+            //String PATH = "images/" + nameFolder;
+            //File directory = new File(PATH);
+            //if (!directory.exists()) {
+            //    directory.mkdir();
+            //}
             int count = 1;
             for (var image : images) {
-                File outputFile = new File(PATH + "/" + "mockup_" + count + ".png");
-                try (OutputStream os = new FileOutputStream(outputFile)) {
-                    os.write(image.getBytes());
-                }
+                //File outputFile = new File(PATH + "/" + "mockup_" + count + ".png");
+                //try (OutputStream os = new FileOutputStream(outputFile)) {
+                //    os.write(image.getBytes());
+                //}
+                saveImageToCloud(image.getBytes(), nameFolder + "-mockup-" + count + ".png");
                 count++;
             }
             return nameFolder;
         } catch (Exception e) {
             return "";
+        }
+    }
+
+    public void saveImageToCloud(byte[] imageBytes, String name) {
+        try {
+            Storage storage = StorageOptions.newBuilder()
+                    .setCredentials(ServiceAccountCredentials.fromStream(new FileInputStream("src/main/resources/google-cloud-api.json")))
+                    .build()
+                    .getService();
+            BlobInfo blobInfo = BlobInfo.newBuilder("ggi_bucket", name).build();
+            storage.create(blobInfo, imageBytes);
+        } catch (Exception e) {
+            System.out.println("error " + e.getMessage());
         }
     }
 
@@ -213,26 +232,48 @@ public class AzureConnectServiceImpl implements AzureConnectService {
 
     }
 
+    public byte[] getBase64FromImageURI(String imageURI) throws IOException {
+        URL url = new URL(imageURI);
+        try (InputStream inputStream = url.openStream()) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            return outputStream.toByteArray();
+            //return Base64.getEncoder().encodeToString(imageBytes);
+        }
+    }
+
+
     @Override
     public RootPredictionDto getRootsAboutPrediction(PredictionRes predictionRes, MultipartFile image) {
         try {
             ArrayList<String> rootImageClipped = new ArrayList<>();
             String[] paths = createDirectory();
-            var PATH = paths[0];
+            //var PATH = paths[0];
             var mainFolder = paths[1];
             // Save bpmn image
-            saveMainBPMN(image, PATH);
+            saveImageToCloud(image.getBytes(), mainFolder + "-bpmn.png");
+            // saveMainBPMN(image, PATH);
+            var index = 1;
             for (var predictionTags : predictionRes.getPredictions()) {
                 if ((predictionTags.getTagName().equals("tarea-usuario") || predictionTags.getTagName().equals("tarea-servicio")) && predictionTags.getProbability() >= 0.70) {
                     // Crop the image based on the provided coordinates
                     BufferedImage clippedImage = getClippedImage(predictionTags.getBoundingBox(), image);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(clippedImage, "jpg", baos);
+                    baos.flush();
 
                     // Save clipped image to new folder
-                    String fileName = PATH + "/" + RandomStringUtils.random(8, "0123456789abcdef") + "-" + predictionTags.getProbability() + ".png";
-                    File outputFile = new File(fileName);
-                    ImageIO.write(clippedImage, "png", outputFile);
+                    String fileName = mainFolder + "-task-" + index + ".png";
+                    //File outputFile = new File(fileName);
+                    saveImageToCloud(baos.toByteArray(), fileName);
+                    //ImageIO.write(clippedImage, "png", outputFile);
                     // Add root images
                     rootImageClipped.add(fileName);
+                    index++;
                 }
             }
             RootPredictionDto rootPredictionDto = new RootPredictionDto(rootImageClipped, mainFolder);
@@ -327,15 +368,16 @@ public class AzureConnectServiceImpl implements AzureConnectService {
             ArrayList<String> tasks = new ArrayList<String>();
             for (var root : rootImagesClipped) {
                 // Step 1: Read the image file and convert to byte array
-                File imageFile = new File(root);
-                FileInputStream inputStream = new FileInputStream(imageFile);
-                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                }
-                byte[] imageBytes = outputStream.toByteArray();
+                //File imageFile = new File(root);
+                //FileInputStream inputStream = new FileInputStream(imageFile);
+                //ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                //byte[] buffer = new byte[1024];
+                //int bytesRead;
+                //while ((bytesRead = inputStream.read(buffer)) != -1) {
+                //    outputStream.write(buffer, 0, bytesRead);
+                //}
+                //byte[] imageBytes = outputStream.toByteArray();
+                byte[] imageBytes = getBase64FromImageURI("https://storage.googleapis.com/ggi_bucket/" + root);
 
                 // Step 2: Create the HttpClient object
                 HttpClient client = HttpClient.newBuilder().build();

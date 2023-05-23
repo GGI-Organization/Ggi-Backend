@@ -59,7 +59,7 @@ public class MockupServiceImpl implements MockupService {
             for (var predictionMockup : predictionMockupRes.getMockups()) {
                 // Save mockups
                 var task = tasks.get(indexTask).getTask();
-                Mockup mockup = new Mockup(nameFolder + "/mockup_" + countMockup + ".png", task, mockupGroup);
+                Mockup mockup = new Mockup(nameFolder + "-mockup-" + countMockup + ".png", task, mockupGroup);
                 mockupRepository.save(mockup);
                 var componentsAdd = new ArrayList<ComponentUI>();
                 for (var component : predictionMockup.getComponents()) {
