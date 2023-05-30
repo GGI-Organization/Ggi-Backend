@@ -332,7 +332,8 @@ public class AzureConnectServiceImpl implements AzureConnectService {
     }
 
     @Override
-    public ArrayList<TaskDetailRes> TaskFilter(ArrayList<String> tasks) {
+    public ArrayList<TaskDetailRes> TaskFilter(ArrayList<String> tasks) throws Exception {
+        try {
 
         // Datos de categorias
         HashMap<String, ArrayList<String>> categories = new HashMap<>();
@@ -360,6 +361,9 @@ public class AzureConnectServiceImpl implements AzureConnectService {
             }
         }
         return taskDetailRes;
+        }catch( Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
 
     @Override

@@ -19,7 +19,7 @@ public interface AzureConnectService {
     String saveMockupImages(MultipartFile[] images);
     CompletableFuture<List<String>> getOCRFromImage(List<byte[]> bytesFromBPMN);
     ArrayList<String> getOCRFromImageV2(ArrayList<String> rootImagesClipped) throws Exception;
-    ArrayList<TaskDetailRes> TaskFilter(ArrayList<String> tasks);
+    ArrayList<TaskDetailRes> TaskFilter(ArrayList<String> tasks) throws Exception;
     void saveMainBPMN(MultipartFile image, String path);
     String[] createDirectory();
     BufferedImage getClippedImage(BoundingBoxRes params, MultipartFile image);

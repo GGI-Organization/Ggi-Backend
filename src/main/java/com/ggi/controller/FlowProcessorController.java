@@ -75,7 +75,7 @@ public class FlowProcessorController {
             res.setResult(tasksRes);
             return ResponseEntity.status(200).body(res);
         } catch (Exception e) {
-            res = new DefaultRes<>("Failed to upload image: " + e.getLocalizedMessage() + " " + e.getMessage(), true);
+            res = new DefaultRes<>("Failed to upload image: " + e.getMessage(), true);
             return ResponseEntity.status(500).body(res);
         }
     }
