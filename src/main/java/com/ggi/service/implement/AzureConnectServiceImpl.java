@@ -188,7 +188,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
         }
     }
 
-    public void saveImageToCloud(byte[] imageBytes, String name) {
+    public void saveImageToCloud(byte[] imageBytes, String name) throws Exception {
         try {
             Storage storage = StorageOptions.newBuilder()
                     .setCredentials(ServiceAccountCredentials.fromStream(new FileInputStream("src/main/resources/google-cloud-api.json")))
@@ -198,6 +198,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
             storage.create(blobInfo, imageBytes);
         } catch (Exception e) {
             System.out.println("error " + e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
 
@@ -248,7 +249,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
 
 
     @Override
-    public RootPredictionDto getRootsAboutPrediction(PredictionRes predictionRes, MultipartFile image) {
+    public RootPredictionDto getRootsAboutPrediction(PredictionRes predictionRes, MultipartFile image) throws Exception {
         try {
             ArrayList<String> rootImageClipped = new ArrayList<>();
             String[] paths = createDirectory();
@@ -280,7 +281,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
             return rootPredictionDto;
         } catch (Exception e) {
             System.out.println("ERROR " + e.getMessage());
-            return null;
+            throw new Exception(e.getMessage());
         }
     }
 

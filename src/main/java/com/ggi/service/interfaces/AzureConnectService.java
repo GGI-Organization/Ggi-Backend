@@ -15,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 public interface AzureConnectService {
     CompletableFuture<PredictionRes> getPredictionFromBPMN(MultipartFile image);
     CompletableFuture<PredictionRes> getPredictionFromMockup(MultipartFile imageMockup);
-    RootPredictionDto getRootsAboutPrediction(PredictionRes predictionRes, MultipartFile image);
+    RootPredictionDto getRootsAboutPrediction(PredictionRes predictionRes, MultipartFile image) throws Exception;
     String saveMockupImages(MultipartFile[] images);
     CompletableFuture<List<String>> getOCRFromImage(List<byte[]> bytesFromBPMN);
     ArrayList<String> getOCRFromImageV2(ArrayList<String> rootImagesClipped) throws Exception;
