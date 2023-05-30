@@ -75,7 +75,7 @@ public class FlowProcessorController {
             res.setResult(tasksRes);
             return ResponseEntity.status(200).body(res);
         } catch (Exception e) {
-            res = new DefaultRes<>("Failed to upload image: " + e.getMessage(), true);
+            res = new DefaultRes<>("Failed to upload image: " + e.getLocalizedMessage() + " " + e.getMessage(), true);
             return ResponseEntity.status(500).body(res);
         }
     }
@@ -92,7 +92,7 @@ public class FlowProcessorController {
 
             // Save bpmn name
             var bpmnIsSaved = diagramBPMNService.update(req.getName(), req.getPathDiagramBPMN(), user.get().getId());
-            if (!bpmnIsSaved)  throw new Exception("Error update BPMN");
+            if (!bpmnIsSaved) throw new Exception("Error update BPMN");
             // Save mockup group name
             var mockupIsSaved = mockupService.update(req.getName(), req.getPathMockupGroup(), user.get().getId());
             if (!mockupIsSaved) throw new Exception("Error update MOCKUP");
