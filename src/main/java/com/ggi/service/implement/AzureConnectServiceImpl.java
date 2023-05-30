@@ -363,7 +363,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
     }
 
     @Override
-    public ArrayList<String> getOCRFromImageV2(ArrayList<String> rootImagesClipped) {
+    public ArrayList<String> getOCRFromImageV2(ArrayList<String> rootImagesClipped) throws Exception {
         try {
             ArrayList<String> tasks = new ArrayList<String>();
             for (var root : rootImagesClipped) {
@@ -413,12 +413,13 @@ public class AzureConnectServiceImpl implements AzureConnectService {
                     tasks.add(task);
                 } else {
                     System.out.println("ERROR SERVICE OCR" + response.statusCode() + response.body());
+                    throw new Exception("ERROR SERVICE OCR" + response.statusCode() + response.body());
                 }
             }
             return tasks;
         } catch (Exception e) {
             System.out.println("ERROR GET OCR " + e.getMessage());
-            return null;
+            throw new Exception(e.getMessage());
         }
 
     }

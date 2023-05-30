@@ -18,7 +18,7 @@ public interface AzureConnectService {
     RootPredictionDto getRootsAboutPrediction(PredictionRes predictionRes, MultipartFile image);
     String saveMockupImages(MultipartFile[] images);
     CompletableFuture<List<String>> getOCRFromImage(List<byte[]> bytesFromBPMN);
-    ArrayList<String> getOCRFromImageV2(ArrayList<String> rootImagesClipped);
+    ArrayList<String> getOCRFromImageV2(ArrayList<String> rootImagesClipped) throws Exception;
     ArrayList<TaskDetailRes> TaskFilter(ArrayList<String> tasks);
     void saveMainBPMN(MultipartFile image, String path);
     String[] createDirectory();
