@@ -205,4 +205,31 @@ public class FlowProcessorController {
     }
 
 
+    @GetMapping(value = "/angular-zip")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    public ResponseEntity<FileSystemResource> angularZIP() {
+        try {
+            // Ruta donde se encuentra el archivo ZIP en el servidor
+            String pathFile = "src/main/resources/angular-template.zip";
+
+            // Crea un objeto File con la ruta del archivo
+            File file = new File(pathFile);
+
+            // Crea un objeto FileSystemResource para leer el archivo del sistema de archivos
+            FileSystemResource fileSystemResource = new FileSystemResource(file);
+
+            // Crea los encabezados de la respuesta HTTP
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.setContentDispositionFormData("attachment", "angular-template.zip");
+
+            // Retorna la respuesta HTTP con el archivo ZIP y los encabezados
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentLength(fileSystemResource.contentLength())
+                    .body(fileSystemResource);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
 }
