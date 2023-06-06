@@ -260,11 +260,11 @@ public class AzureConnectServiceImpl implements AzureConnectService {
             // saveMainBPMN(image, PATH);
             var index = 1;
             for (var predictionTags : predictionRes.getPredictions()) {
-                if ((predictionTags.getTagName().equals("tarea-usuario") || predictionTags.getTagName().equals("tarea-servicio")) && predictionTags.getProbability() >= 0.70) {
+                if ((predictionTags.getTagName().equals("tarea-usuario") || predictionTags.getTagName().equals("tarea-servicio")) && predictionTags.getProbability() >= 0.60) {
                     // Crop the image based on the provided coordinates
                     BufferedImage clippedImage = getClippedImage(predictionTags.getBoundingBox(), image);
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    ImageIO.write(clippedImage, "jpg", baos);
+                    ImageIO.write(clippedImage, "png", baos);
                     baos.flush();
 
                     // Save clipped image to new folder
@@ -338,7 +338,7 @@ public class AzureConnectServiceImpl implements AzureConnectService {
 
         // Datos de categorias
         HashMap<String, ArrayList<String>> categories = new HashMap<>();
-        categories.put("create", new ArrayList<>(Arrays.asList("crea", "agrega", "construir", "publica", "añad", "registr")));
+        categories.put("create", new ArrayList<>(Arrays.asList("crea", "agrega", "construir", "publica", "añad", "registr", "reservar")));
         categories.put("read", new ArrayList<>(Arrays.asList("lee", "ver", "revis", "listar", "busca", "mostrar", "examinar")));
         categories.put("update", new ArrayList<>(Arrays.asList("actualiza", "modifica", "edita", "cambia", "corregir", "corrige")));
         categories.put("delete", new ArrayList<>(Arrays.asList("elimina", "borra", "suprim", "descarta", "remover", "deshacer")));
